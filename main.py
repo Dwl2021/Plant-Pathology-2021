@@ -12,8 +12,9 @@ from util.Plant_Accuracy import *
 from util.preprocessing import *
 
 # models
-from Model.ResNet import *
-from Model.SEResnet import *
+from Models.ResNet import *
+from Models.SEResnet import *
+from Models.ViT import *
 
 
 class config:
@@ -31,7 +32,7 @@ class config:
     TEST_SIZE = 0
     VAL_SIZE = 0
 
-    EPOCHES = 20
+    EPOCHES = 200
     INPUT_HEIGHT = 224
     INPUT_WIDTH = 224
 
@@ -41,7 +42,7 @@ class config:
     
     IMAGE_TYPE = '.jpg'
     BATCH_SIZE = 50
-    MODEL_NAME = 'ResNet101'
+    MODEL_NAME = 'ViT'
 
     LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     # ----------------------init the model--------------------
     
     ######### to change the model here ##########
-    model = SEResnet().to(config.DEVICE)
+    model =  ViT().to(config.DEVICE)
     ############################################
 
     # ----------------------for test only--------------------
