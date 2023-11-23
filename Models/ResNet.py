@@ -2,12 +2,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class ResNet101(nn.Module):
-    def __init__(self, num_classes=6, pretrained=True):
-        super(ResNet101, self).__init__()
+class ResNet(nn.Module):
+    def __init__(self, model=101,num_classes=6, pretrained=True):
+        super(ResNet, self).__init__()
         
         # 使用torch.hub加载预训练的ResNet-50模型
-        self.model = torch.hub.load('pytorch/vision:v0.6.0', 'resnet101', pretrained=pretrained)
+        if model==101:
+            self.model = torch.hub.load('pytorch/vision:v0.6.0', 'resnet101', pretrained=pretrained)
+        elif model==50:
+            self.model = torch.hub.load('pytorch/vision:v0.6.0', 'resnet50', pretrained=pretrained)
+        else:
+            raise ValueError("Unsupported model type. Supported types: 101, 50")
+
         # 修改全连接层，将输出特征数修改为num_classes
         # self.model.fc = nn.Linear(in_features=2048, out_features=num_classes, bias=True)
         in_features = self.model.fc.in_features

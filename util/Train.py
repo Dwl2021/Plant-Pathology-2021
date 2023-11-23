@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def Train(config,model, train_loader, val_loader, save_output=False):
+def Train(config,model, train_loader, val_loader, save_output=True):
     best_val_acc = 0.  # 记录最好的acc，用于保存模型
     val_predictions = []
     train_loss = []
@@ -17,9 +17,9 @@ def Train(config,model, train_loader, val_loader, save_output=False):
     recall_list = []
     f1_list = []
     
-    config.OPTIM = optim.Adam(model.parameters(), lr=0.0001)
+    config.OPTIM = torch.optim.Adam(model.parameters(), lr=config.LR, weight_decay=config.WEIGHT_DECAY)
     
-    for epoch in range(config.EPOCHES):
+    for epoch in range(config.EPOCHS):
         model.train()
         ta, tl = train_fn(config, model, train_loader, epoch)
         model.eval()
@@ -73,7 +73,7 @@ def Train(config,model, train_loader, val_loader, save_output=False):
     
         # Plot precision
         plt.subplot(1, 3, 1)
-        plt.plot(precision_list, label='Precision', color='#BEB8DC')
+        plt.plot(precision_list, label='Precision', color='#BB9727')
         plt.xlabel('Epochs')
         plt.ylabel('Precision')
         plt.legend()
@@ -81,7 +81,7 @@ def Train(config,model, train_loader, val_loader, save_output=False):
     
         # Plot recall
         plt.subplot(1, 3, 2)
-        plt.plot(recall_list, label='Recall', color='#D291BC')
+        plt.plot(recall_list, label='Recall', color='#32B897')
         plt.xlabel('Epochs')
         plt.ylabel('Recall')
         plt.legend()
@@ -89,7 +89,7 @@ def Train(config,model, train_loader, val_loader, save_output=False):
     
         # Plot F1 score
         plt.subplot(1, 3, 3)
-        plt.plot(f1_list, label='F1 Score', color='#E7DAD2')
+        plt.plot(f1_list, label='F1 Score', color='#C76DA2')
         plt.xlabel('Epochs')
         plt.ylabel('F1 Score')
         plt.legend()
@@ -97,8 +97,7 @@ def Train(config,model, train_loader, val_loader, save_output=False):
     
         # Save the second figure with a different name
         plt.savefig(config.SAVE_DIR + config.MODEL_NAME + '_Precision_Recall_F1.png')
-
-    return model
+    return model, valid_loss[-1], valid_accuracy[-1], precision_list[-1], recall_list[-1], f1_list[-1]
 
 def train_fn(config, model, train_loader, epoch):
     tr_loss = 0

@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import DataLoader
 import torch.nn as nn
 import sys
+import os
 
 # custom module
 from util.Data_loader import *
@@ -15,6 +16,8 @@ from util.preprocessing import *
 from Models.ResNet import *
 from Models.SEResnet import *
 from Models.ViT import *
+from torchvision.models import VisionTransformer
+from super_gradients.training import models
 
 
 class config:
@@ -32,7 +35,7 @@ class config:
     TEST_SIZE = 0
     VAL_SIZE = 0
 
-    EPOCHES = 200
+    EPOCHS = 2
     INPUT_HEIGHT = 224
     INPUT_WIDTH = 224
 
@@ -41,18 +44,44 @@ class config:
     IMAGENET_STD = [0.229, 0.224, 0.225]
     
     IMAGE_TYPE = '.jpg'
-    BATCH_SIZE = 50
-    MODEL_NAME = 'ViT'
+    BATCH_SIZE = 100
+    MODEL_NAME = 'ResNet50'
 
     LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
     OPTIM = None
+    LR = 0.001
+    WEIGHT_DECAY = 1e-4
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     LABELS = ['complex', 'frog_eye_leaf_spot', 'healthy', 'powdery_mildew', 'rust', 'scab']
     NUM_CLASSES = len(LABELS)
-    SAVE_DIR = "/root/CV_Model/"
+    SAVE_DIR = "/root/CV_Model/result/"+f"{MODEL_NAME}/"
+    LOG_TXT = "/root/CV_Model/log.txt"
+
+
+def load_model(model_name):
+    if model_name == 'ResNet50':
+        model = ResNet(model=50)
+    elif model_name == 'ResNet50':
+        model = ResNet(model=101)
+    elif model_name == 'SEResNet34':
+        model = SEResnet(model=34)
+    elif model_name == 'SEResNet50':
+        model = SEResnet(model=50)
+    elif model_name == 'SEResNet101':
+        model = SEResnet(model=101)
+    elif model_name == 'SEResNet200':
+        model = SEResnet(model=200)
+    elif model_name == 'SG_ViT':
+        model = models.get("vit_base", num_classes=6, pretrained_weights='imagenet')
+    elif model_name == 'Torch_ViT':
+        model = VisionTransformer(image_size=224, patch_size=16, num_layers=12, num_heads=12, hidden_dim=768, mlp_dim=3072, num_classes=6)
+    
+    return model
 
 if __name__ == '__main__': 
+    if not os.path.exists(config.SAVE_DIR):
+        os.makedirs(config.SAVE_DIR)
     # ---------------preprocess the saw image----------------
     
     # preprocessing(config)
@@ -74,8 +103,8 @@ if __name__ == '__main__':
     # ----------------------init the model--------------------
     
     ######### to change the model here ##########
-    model =  ViT().to(config.DEVICE)
-    ############################################
+    model = load_model(config.MODEL_NAME)
+    model = model.to(config.DEVICE)
 
     # ----------------------for test only--------------------
     '''
@@ -87,17 +116,30 @@ if __name__ == '__main__':
     print("Test Accuracy: {:.4f}, Test Loss: {:.4f}".format(accuracy, loss))
     sys.exit()
     '''
-    
 
     # ----------------------for train -------------------
+    model,val_loss,val_acc,precision,recall,f1 = Train(config ,model, train_loader, val_loader, True)
 
-
-    model = Train(config ,model, train_loader, val_loader, True)
-
-    
      # ----------------------for test--------------------
     print("Now begin testing...")
     model.load_state_dict(torch.load( config.SAVE_DIR +config.MODEL_NAME +"_best.pt"))
     model.eval()
     accuracy, loss = Test(config, model, test_loader)
     print("Test Accuracy: {:.4f}, Test Loss: {:.4f}".format(accuracy, loss))
+
+    with open(config.LOG_TXT, 'a') as file:
+        file.write("Model: " + config.MODEL_NAME +
+                   "\nEpochs: " + str(config.EPOCHS) +
+                   "\nBase LR: " + str(config.LR) +
+                   "\nWeight decay: " + str(config.WEIGHT_DECAY) +
+                   "\nDropout: " + str(0.5) +
+                   "\nvalid loss: " + str(val_loss) +
+                   "\nvalid accuracy: " + str(val_acc) +
+                   "\nprecision: " + str(precision) +
+                   "\nrecall: " + str(recall) +
+                   "\nf1: " + str(f1) +
+                   "\ntest accuracy: " + str(accuracy) +
+                   "\ntest loss: " + str(loss) + "\n"+
+                   "-------------------------------------\n"
+                  )
+

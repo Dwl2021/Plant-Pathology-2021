@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sys
 
-def Test(config, model, test_loader, save_confusion=False):
+def Test(config, model, test_loader, save_confusion=True):
     test_loss = 0
     predictions = []
     true_labels = []
@@ -33,7 +33,7 @@ def Test(config, model, test_loader, save_confusion=False):
     test_accuracy = config.ACC_FUNC.compute().item()
 
     if save_confusion:
-        plot_confusion_matrix(true_labels, predictions, save_path=config.SAVE_DIR + f"{config.MODEL_NAME}_test_confusion.png")
+        plot_confusion_matrix(true_labels, predictions, save_path=config.SAVE_DIR + "test_confusion.png")
 
     return test_accuracy, test_loss / config.TEST_SIZE
 
