@@ -10,7 +10,7 @@ def Test(config, model, test_loader, save_confusion=True):
     test_loss = 0
     predictions = []
     true_labels = []
-
+    pred_saw = []
     config.ACC_FUNC.reset()
 
     with torch.no_grad():
@@ -23,20 +23,31 @@ def Test(config, model, test_loader, save_confusion=True):
             config.ACC_FUNC.update(pred.cpu(), labels.cpu())
 
             # Save predictions and true labels as lists
+            pred_saw.append(torch.sigmoid(pred).cpu().numpy().astype(np.int32))
             predictions.append((torch.sigmoid(pred)>0.5).int().cpu().numpy().astype(np.int32))
             true_labels.append(labels.cpu().numpy().astype(np.int32))
 
     # Convert lists to NumPy arrays
     predictions = np.concatenate(predictions, axis=0)
     true_labels = np.concatenate(true_labels, axis=0)
-
+    pred_saw = np.concatenate(pred_saw, axis=0)
+    
     test_accuracy = config.ACC_FUNC.compute().item()
 
     if save_confusion:
         plot_confusion_matrix(true_labels, predictions, save_path=config.SAVE_DIR + "test_confusion.png")
+        # plot_kdeplot(pred_saw, save_path=config.SAVE_DIR + "test_kdeplot.png")
 
     return test_accuracy, test_loss / config.TEST_SIZE
 
+def plot_kdeplot(predictions,save_path):
+    print(predictions)
+    plt.figure(figsize=(10, 6))
+    sns.kdeplot(data=predictions, fill=True)
+    plt.xlabel('Prediction Probability')
+    plt.ylabel('Density')
+    plt.title('Predicted Label Probability Distribution')
+    plt.savefig(save_path)
 
 def plot_confusion_matrix(true_labels, predictions, save_path):
     cm = multilabel_confusion_matrix(true_labels, predictions)

@@ -45,7 +45,7 @@ class config:
     
     IMAGE_TYPE = '.jpg'
     BATCH_SIZE = 100
-    MODEL_NAME = 'ResNet50'
+    MODEL_NAME = 'ResNet101'
 
     LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
@@ -62,7 +62,7 @@ class config:
 def load_model(model_name):
     if model_name == 'ResNet50':
         model = ResNet(model=50)
-    elif model_name == 'ResNet50':
+    elif model_name == 'ResNet101':
         model = ResNet(model=101)
     elif model_name == 'SEResNet34':
         model = SEResnet(model=34)
@@ -76,7 +76,6 @@ def load_model(model_name):
         model = models.get("vit_base", num_classes=6, pretrained_weights='imagenet')
     elif model_name == 'Torch_ViT':
         model = VisionTransformer(image_size=224, patch_size=16, num_layers=12, num_heads=12, hidden_dim=768, mlp_dim=3072, num_classes=6)
-    
     return model
 
 if __name__ == '__main__': 
@@ -107,15 +106,15 @@ if __name__ == '__main__':
     model = model.to(config.DEVICE)
 
     # ----------------------for test only--------------------
-    '''
+    
     print("Now begin testing...")
-    pth_to_pt = "/root/SeResnet_best.pt"
+    pth_to_pt = "/root/best1.pt"
     model.load_state_dict(torch.load(pth_to_pt))
     model.eval()
     accuracy, loss= Test(config, model, test_loader, True)
     print("Test Accuracy: {:.4f}, Test Loss: {:.4f}".format(accuracy, loss))
     sys.exit()
-    '''
+   
 
     # ----------------------for train -------------------
     model,val_loss,val_acc,precision,recall,f1 = Train(config ,model, train_loader, val_loader, True)
