@@ -58,7 +58,7 @@ class SEResnet(nn.Module):
         classes = num_classes
         if model == 101:
             num = [3, 4, 23, 3]
-        elif model == 50
+        elif model == 50:
             num = [3, 4, 6, 3]
         elif model == 18:
             num = [2, 2, 2, 2]

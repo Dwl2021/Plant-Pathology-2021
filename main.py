@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
+import sys
 
 # custom module
 from util.Data_loader import *
@@ -14,6 +15,7 @@ from util.preprocessing import *
 
 # mode
 from ResNet import *
+from SEResnet import *
 
 class config:
     TRAIN_INIT_DIR = Path('/root/plant_dataset/train/images')
@@ -39,7 +41,7 @@ class config:
     IMAGENET_STD = [0.229, 0.224, 0.225]
     
     IMAGE_TYPE = '.jpg'
-    BATCH_SIZE = 100
+    BATCH_SIZE = 50
     MODEL_NAME = 'ResNet101'
 
     LOSS_FUNC = nn.BCEWithLogitsLoss()
@@ -68,13 +70,24 @@ if __name__ == '__main__':
     train_loader = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=config.BATCH_SIZE)
     test_loader = DataLoader(test_dataset, batch_size=config.BATCH_SIZE)
+    
+    # ----------------------init the model--------------------
+    
+    ######### to change the model here ##########
+    model = SEResnet().to(config.DEVICE)
+    ############################################
 
-    # ----------------------begin train--------------------
+    # ----------------------for test only--------------------
+    print("Now begin testing...")
+    pth_to_pt = "/root/SeResnet_best.pt"
+    model.load_state_dict(torch.load(pth_to_pt))
+    model.eval()
+    accuracy, loss = test_fn(config, model, test_loader)
+    print("Test Accuracy: {:.4f}, Test Loss: {:.4f}".format(accuracy, loss))
+    sys.exit()
+
     
-    # ----to change the model here-------
-    model = ResNet101().to(config.DEVICE)
-    # -----------------------------------
-    
+    # ----------------------for train and test------------------------
     best_val_acc = 0.#记录最好的acc，用于保存模型
     val_predictions = []
     train_loss = []
