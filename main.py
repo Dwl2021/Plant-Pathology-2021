@@ -19,6 +19,7 @@ from Models.ViT import *
 from torchvision.models import VisionTransformer
 from super_gradients.training import models
 
+args = sys.argv[1]
 
 class config:
     TRAIN_INIT_DIR = Path('/root/plant_dataset/train/images')
@@ -35,7 +36,7 @@ class config:
     TEST_SIZE = 0
     VAL_SIZE = 0
 
-    EPOCHS = 2
+    EPOCHS = 150
     INPUT_HEIGHT = 224
     INPUT_WIDTH = 224
 
@@ -44,14 +45,14 @@ class config:
     IMAGENET_STD = [0.229, 0.224, 0.225]
     
     IMAGE_TYPE = '.jpg'
-    BATCH_SIZE = 100
-    MODEL_NAME = 'ResNet101'
+    BATCH_SIZE = 200
+    MODEL_NAME = args
 
     LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
     OPTIM = None
-    LR = 0.001
-    WEIGHT_DECAY = 1e-4
+    LR = 0.0005
+    WEIGHT_DECAY = 0
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     LABELS = ['complex', 'frog_eye_leaf_spot', 'healthy', 'powdery_mildew', 'rust', 'scab']
     NUM_CLASSES = len(LABELS)
@@ -60,23 +61,24 @@ class config:
 
 
 def load_model(model_name):
+    l_model = None
     if model_name == 'ResNet50':
-        model = ResNet(model=50)
+        l_model = ResNet(model=50)
     elif model_name == 'ResNet101':
-        model = ResNet(model=101)
+        l_model = ResNet(model=101)
     elif model_name == 'SEResNet34':
-        model = SEResnet(model=34)
+        l_model = SEResnet(model=34)
     elif model_name == 'SEResNet50':
-        model = SEResnet(model=50)
+        l_model = SEResnet(model=50)
     elif model_name == 'SEResNet101':
-        model = SEResnet(model=101)
+        l_model = SEResnet(model=101)
     elif model_name == 'SEResNet200':
-        model = SEResnet(model=200)
+        l_model = SEResnet(model=200)
     elif model_name == 'SG_ViT':
-        model = models.get("vit_base", num_classes=6, pretrained_weights='imagenet')
+        l_model = models.get("vit_base", num_classes=6, pretrained_weights='imagenet')
     elif model_name == 'Torch_ViT':
-        model = VisionTransformer(image_size=224, patch_size=16, num_layers=12, num_heads=12, hidden_dim=768, mlp_dim=3072, num_classes=6)
-    return model
+        l_model = VisionTransformer(image_size=224, patch_size=16, num_layers=12, num_heads=12, hidden_dim=768, mlp_dim=3072, num_classes=6)
+    return l_model
 
 if __name__ == '__main__': 
     if not os.path.exists(config.SAVE_DIR):
@@ -106,7 +108,7 @@ if __name__ == '__main__':
     model = model.to(config.DEVICE)
 
     # ----------------------for test only--------------------
-    
+    '''
     print("Now begin testing...")
     pth_to_pt = "/root/best1.pt"
     model.load_state_dict(torch.load(pth_to_pt))
@@ -114,7 +116,7 @@ if __name__ == '__main__':
     accuracy, loss= Test(config, model, test_loader, True)
     print("Test Accuracy: {:.4f}, Test Loss: {:.4f}".format(accuracy, loss))
     sys.exit()
-   
+    '''
 
     # ----------------------for train -------------------
     model,val_loss,val_acc,precision,recall,f1 = Train(config ,model, train_loader, val_loader, True)
@@ -125,7 +127,7 @@ if __name__ == '__main__':
     model.eval()
     accuracy, loss = Test(config, model, test_loader)
     print("Test Accuracy: {:.4f}, Test Loss: {:.4f}".format(accuracy, loss))
-
+    
     with open(config.LOG_TXT, 'a') as file:
         file.write("Model: " + config.MODEL_NAME +
                    "\nEpochs: " + str(config.EPOCHS) +
@@ -141,4 +143,5 @@ if __name__ == '__main__':
                    "\ntest loss: " + str(loss) + "\n"+
                    "-------------------------------------\n"
                   )
-
+    
+    torch.cuda.empty_cache()

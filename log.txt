@@ -1,0 +1,91 @@
+Model: ResNet50
+Epochs: 100
+Base LR: 0.001
+Weight decay: 0.0001
+Dropout: 0.5
+valid loss: 0.0012356191873550415
+valid accuracy: 0.7133333086967468
+precision: 0.7727954032825726
+recall: 0.7916018662519441
+f1: 0.7650597778878824
+test accuracy: 0.7699999809265137
+test loss: 0.0008340790122747421
+-------------------------------------
+Model: ResNet101
+Epochs: 100
+Base LR: 0.001
+Weight decay: 0.0001
+Dropout: 0.5
+valid loss: 0.0013137257595856983
+valid accuracy: 0.721666693687439
+precision: 0.8041236424080626
+recall: 0.7947122861586314
+f1: 0.784642309451933
+test accuracy: 0.7649999856948853
+test loss: 0.0012327940265337625
+-------------------------------------
+Model: SG_ViT
+Epochs: 100
+Base LR: 0.0001
+Weight decay: 0
+Dropout: 0.5
+valid loss: 0.0018603394428888956
+valid accuracy: 0.8333333134651184
+precision: 0.8881030597841272
+recall: 0.838258164852255
+f1: 0.861710185668124
+test accuracy: 0.824999988079071
+test loss: 0.0022225851317246755
+-------------------------------------
+Model: SEResNet50
+Epochs: 150
+Base LR: 0.0005
+Weight decay: 0
+Dropout: 0.5
+valid loss: 0.002231158713499705
+valid accuracy: 0.7283333539962769
+precision: 0.7948221755237387
+recall: 0.7744945567651633
+f1: 0.7762047332286913
+test accuracy: 0.7566666603088379
+test loss: 0.002033597379922867
+-------------------------------------
+Model: SEResNet50
+Epochs: 150
+Base LR: 0.0005
+Weight decay: 0
+Dropout: 0.5
+valid loss: 0.0021080323060353595
+valid accuracy: 0.7316666841506958
+precision: 0.8012061407542357
+recall: 0.7589424572317263
+f1: 0.7721970272450708
+test accuracy: 0.7183333039283752
+test loss: 0.00230256254474322
+-------------------------------------
+Model: SEResNet50
+Epochs: 150
+Base LR: 0.0005
+Weight decay: 0
+Dropout: 0.5
+valid loss: 0.0018754692127307257
+valid accuracy: 0.7816666960716248
+precision: 0.8310155351283467
+recall: 0.807153965785381
+f1: 0.8118497513440034
+test accuracy: 0.7816666960716248
+test loss: 0.0017064533879359563
+-------------------------------------
+Model: SEResNet101
+Epochs: 120
+Base LR: 0.0005
+Weight decay: 0
+Dropout: 0.5
+valid loss: 0.0019994170218706133
+valid accuracy: 0.7583333253860474
+precision: 0.8320537767958381
+recall: 0.7931570762052877
+f1: 0.801165060576628
+test accuracy: 0.7683333158493042
+test loss: 0.0014811123659213383
+-------------------------------------
