@@ -105,9 +105,9 @@ def train_fn(config, model, train_loader, epoch):
     config.ACC_FUNC.reset()
     for images, labels in tqdm(train_loader, total=len(train_loader), desc="Epoch {} Training".format(epoch + 1)):
         images, labels = images.to(config.DEVICE), labels.to(config.DEVICE)
+        images = images.unsqueeze(0)  ## just for navit
         config.OPTIM.zero_grad()
         pred = model(images)
-
         # calculate the loss
         loss = config.LOSS_FUNC(pred, labels.squeeze(-1))
         model.zero_grad()
