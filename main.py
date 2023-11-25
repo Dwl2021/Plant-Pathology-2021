@@ -15,11 +15,20 @@ from util.preprocessing import *
 # models
 from Models.ResNet import *
 from Models.SEResnet import *
-from Models.ViT import *
-from torchvision.models import VisionTransformer
+from Models.SG_ViT import *
+from Models.Torch_ViT import *
+from Models.DeepViT import *
+from Models.CrossViT import *
+from Models.Deit import *
 from super_gradients.training import models
 
-args = sys.argv[1]
+default_model_name = None
+default_epochs = 150
+default_batch_size = 150
+
+model_name = sys.argv[1] if len(sys.argv) > 1 else default_model_name
+epochs = int(sys.argv[2]) if len(sys.argv) > 2 else default_epochs
+batch_size = int(sys.argv[3]) if len(sys.argv) > 2 else default_batch_size
 
 class config:
     TRAIN_INIT_DIR = Path('/root/plant_dataset/train/images')
@@ -36,7 +45,7 @@ class config:
     TEST_SIZE = 0
     VAL_SIZE = 0
 
-    EPOCHS = 150
+    EPOCHS = epochs
     INPUT_HEIGHT = 224
     INPUT_WIDTH = 224
 
@@ -45,14 +54,14 @@ class config:
     IMAGENET_STD = [0.229, 0.224, 0.225]
     
     IMAGE_TYPE = '.jpg'
-    BATCH_SIZE = 200
-    MODEL_NAME = args
+    BATCH_SIZE = batch_size
+    MODEL_NAME = model_name
 
     LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
     OPTIM = None
-    LR = 0.0005
-    WEIGHT_DECAY = 0
+    LR = 0.00008
+    WEIGHT_DECAY = 0.00001
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     LABELS = ['complex', 'frog_eye_leaf_spot', 'healthy', 'powdery_mildew', 'rust', 'scab']
     NUM_CLASSES = len(LABELS)
@@ -72,12 +81,20 @@ def load_model(model_name):
         l_model = SEResnet(model=50)
     elif model_name == 'SEResNet101':
         l_model = SEResnet(model=101)
-    elif model_name == 'SEResNet200':
-        l_model = SEResnet(model=200)
     elif model_name == 'SG_ViT':
-        l_model = models.get("vit_base", num_classes=6, pretrained_weights='imagenet')
+        l_model = SG_ViT()
     elif model_name == 'Torch_ViT':
-        l_model = VisionTransformer(image_size=224, patch_size=16, num_layers=12, num_heads=12, hidden_dim=768, mlp_dim=3072, num_classes=6)
+        l_model = Torch_ViT()
+    elif model_name == "DeepViT":
+        l_model = Deep_ViT()
+    elif model_name == "CrossViT":
+        l_model = Cross_ViT(pretrain_path='/root/crossvit_small_224.pth')
+    elif model_name == "Deit":
+        l_model = Deit()
+    elif model_name == "ResNeXt":
+        l_model = models.get("ResNext", num_classes=6, pretrained_weights='imagenet')
+    else:
+        raise("Error!")
     return l_model
 
 if __name__ == '__main__': 
@@ -133,7 +150,7 @@ if __name__ == '__main__':
                    "\nEpochs: " + str(config.EPOCHS) +
                    "\nBase LR: " + str(config.LR) +
                    "\nWeight decay: " + str(config.WEIGHT_DECAY) +
-                   "\nDropout: " + str(0.5) +
+                   "\nDropout: " + str(0.05) +
                    "\nvalid loss: " + str(val_loss) +
                    "\nvalid accuracy: " + str(val_acc) +
                    "\nprecision: " + str(precision) +

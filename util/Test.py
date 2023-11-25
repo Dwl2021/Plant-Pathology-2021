@@ -16,6 +16,8 @@ def Test(config, model, test_loader, save_confusion=True):
     with torch.no_grad():
         for images, labels in tqdm(test_loader, total=len(test_loader), desc="Testing "):
             images, labels = images.to(config.DEVICE), labels.to(config.DEVICE)
+            ## just for navit
+            # images = images.unsqueeze(0)
             pred = model(images)
             loss = config.LOSS_FUNC(pred, labels.squeeze(-1))
             test_loss += loss.item()
