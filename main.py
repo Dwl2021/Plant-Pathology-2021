@@ -63,8 +63,8 @@ class config:
     LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
     OPTIM = None
-    LR = 0.00008
-    WEIGHT_DECAY = 0.00001
+    LR = 0.00001
+    WEIGHT_DECAY = 0.000001
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     LABELS = ['complex', 'frog_eye_leaf_spot', 'healthy', 'powdery_mildew', 'rust', 'scab']
     NUM_CLASSES = len(LABELS)

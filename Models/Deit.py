@@ -1,22 +1,20 @@
-import timm
-import torch.nn as nn
 import torch
+import torch.nn as nn
 
 class Deit(nn.Module):
-    def __init__(self, num_classes=6):
+    def __init__(self, num_classes=6, pretrained=True):
         super(Deit, self).__init__()
 
-        # Load the pre-trained DeiT model
-        self.base_model = timm.create_model('deit_small_patch16_224', pretrained=False)
-        state_dict = torch.load("/root/CV_Model/deit_tiny_patch16_224-a1311bcf.pth")
-
-        # Modify the output layer to match the specified number of classes
-        self.base_model.head = nn.Linear(
-            in_features=self.base_model.head.in_features,
-            out_features=num_classes
+        # Load the pre-trained DeiT model with the specified number of classes
+        self.model = torch.hub.load('facebookresearch/deit', 'deit_base_patch16_224', pretrained=pretrained)
+        self.fc =  nn.Sequential(
+            nn.Linear(1000, 2048),
+            nn.ReLU(),
+            nn.Linear(2048, num_classes)
         )
 
     def forward(self, x):
         # Forward pass through the DeiT model
-        return self.base_model(x)
-
+        x = self.model(x)
+        x = self.fc(x)
+        return x
