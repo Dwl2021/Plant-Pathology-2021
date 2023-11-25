@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 import sys
 import os
+from vit_pytorch.na_vit import NaViT
 
 # custom module
 from util.Data_loader import *
@@ -21,6 +22,7 @@ from Models.DeepViT import *
 from Models.CrossViT import *
 from Models.Deit import *
 from super_gradients.training import models
+from vit_pytorch.deepvit import DeepViT
 
 default_model_name = None
 default_epochs = 150
@@ -44,6 +46,7 @@ class config:
     TRAIN_SIZE = 0
     TEST_SIZE = 0
     VAL_SIZE = 0
+
 
     EPOCHS = epochs
     INPUT_HEIGHT = 224
