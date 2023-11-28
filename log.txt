@@ -2,7 +2,7 @@ Model: ResNet50
 Epochs: 100
 Base LR: 0.001
 Weight decay: 0.0001
-Dropout: 0.5
+Dropout: 0.2
 valid loss: 0.0012356191873550415
 valid accuracy: 0.7133333086967468
 precision: 0.7727954032825726
@@ -15,7 +15,7 @@ Model: ResNet101
 Epochs: 100
 Base LR: 0.001
 Weight decay: 0.0001
-Dropout: 0.5
+Dropout: 0.2
 valid loss: 0.0013137257595856983
 valid accuracy: 0.721666693687439
 precision: 0.8041236424080626
@@ -24,50 +24,11 @@ f1: 0.784642309451933
 test accuracy: 0.7649999856948853
 test loss: 0.0012327940265337625
 -------------------------------------
-Model: SG_ViT
-Epochs: 100
-Base LR: 0.0001
-Weight decay: 0
-Dropout: 0.5
-valid loss: 0.0018603394428888956
-valid accuracy: 0.8333333134651184
-precision: 0.8881030597841272
-recall: 0.838258164852255
-f1: 0.861710185668124
-test accuracy: 0.824999988079071
-test loss: 0.0022225851317246755
--------------------------------------
 Model: SEResNet50
 Epochs: 150
 Base LR: 0.0005
 Weight decay: 0
-Dropout: 0.5
-valid loss: 0.002231158713499705
-valid accuracy: 0.7283333539962769
-precision: 0.7948221755237387
-recall: 0.7744945567651633
-f1: 0.7762047332286913
-test accuracy: 0.7566666603088379
-test loss: 0.002033597379922867
--------------------------------------
-Model: SEResNet50
-Epochs: 150
-Base LR: 0.0005
-Weight decay: 0
-Dropout: 0.5
-valid loss: 0.0021080323060353595
-valid accuracy: 0.7316666841506958
-precision: 0.8012061407542357
-recall: 0.7589424572317263
-f1: 0.7721970272450708
-test accuracy: 0.7183333039283752
-test loss: 0.00230256254474322
--------------------------------------
-Model: SEResNet50
-Epochs: 150
-Base LR: 0.0005
-Weight decay: 0
-Dropout: 0.5
+Dropout: 0.01
 valid loss: 0.0018754692127307257
 valid accuracy: 0.7816666960716248
 precision: 0.8310155351283467
@@ -80,7 +41,7 @@ Model: SEResNet101
 Epochs: 120
 Base LR: 0.0005
 Weight decay: 0
-Dropout: 0.5
+Dropout: 0.01
 valid loss: 0.0019994170218706133
 valid accuracy: 0.7583333253860474
 precision: 0.8320537767958381
@@ -93,7 +54,7 @@ Model: SEResNet34
 Epochs: 150
 Base LR: 0.0005
 Weight decay: 0
-Dropout: 0.5
+Dropout: 0.01
 valid loss: 0.0013059814274311065
 valid accuracy: 0.7900000214576721
 precision: 0.8450114523310825
@@ -101,6 +62,19 @@ recall: 0.8164852255054432
 f1: 0.8227255409191564
 test accuracy: 0.7383333444595337
 test loss: 0.001769598772128423
+-------------------------------------
+Model: SG_ViT
+Epochs: 100
+Base LR: 0.0001
+Weight decay: 0
+Dropout: 0.1
+valid loss: 0.0018603394428888956
+valid accuracy: 0.8333333134651184
+precision: 0.8881030597841272
+recall: 0.838258164852255
+f1: 0.861710185668124
+test accuracy: 0.824999988079071
+test loss: 0.0022225851317246755
 -------------------------------------
 Model: DeepViT
 Epochs: 100
