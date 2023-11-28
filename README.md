@@ -16,7 +16,7 @@ pip install -r requirements.txt
 
 ## 代码运行
 
-运行主程序main.py，并且之后的参数依次是，**模型名、epochs。batch_size**。
+运行主程序main.py，并且之后的参数依次是，**模型名、epochs、batch_size**。
 
 ```
 python main.py ResNet50 100 50
