@@ -36,13 +36,13 @@ class config:
     TRAIN_INIT_DIR = Path('/root/plant_dataset/train/images')
     TEST_INIT_DIR = Path('/root/plant_dataset/test/images')
     VAL_INIT_DIR = Path('/root/plant_dataset/val/images')
-    TRAIN_DIR = Path('/root/CV_Model/data/train/')
-    TEST_DIR = Path('/root/CV_Model/data/test/')
-    VAL_DIR = Path('/root/CV_Model/data/val/')
+    TRAIN_DIR = Path('/root/Plant-Pathology-2021/data/train/')
+    TEST_DIR = Path('/root/Plant-Pathology-2021/data/test/')
+    VAL_DIR = Path('/root/Plant-Pathology-2021/data/val/')
 
-    CSV_TRAIN = Path('/root/CV_Model/data/train_label.csv')
-    CSV_TEST = Path('/root/CV_Model/data/test_label.csv')
-    CSV_VAL = Path('/root/CV_Model/data/val_label.csv')
+    CSV_TRAIN = Path('/root/Plant-Pathology-2021/data/train_label.csv')
+    CSV_TEST = Path('/root/Plant-Pathology-2021/data/test_label.csv')
+    CSV_VAL = Path('/root/Plant-Pathology-2021/data/val_label.csv')
     TRAIN_SIZE = 0
     TEST_SIZE = 0
     VAL_SIZE = 0
@@ -68,8 +68,8 @@ class config:
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     LABELS = ['complex', 'frog_eye_leaf_spot', 'healthy', 'powdery_mildew', 'rust', 'scab']
     NUM_CLASSES = len(LABELS)
-    SAVE_DIR = "/root/CV_Model/result/"+f"{MODEL_NAME}/"
-    LOG_TXT = "/root/CV_Model/log.txt"
+    SAVE_DIR = "/root/Plant-Pathology-2021/result/"+f"{MODEL_NAME}/"
+    LOG_TXT = "/root/Plant-Pathology-2021/log.txt"
 
 
 def load_model(model_name):
