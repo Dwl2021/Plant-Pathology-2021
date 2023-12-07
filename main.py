@@ -18,6 +18,7 @@ import argparse
 
 '''
 for example:
+
 python main.py --model_name CrossViT --epochs 100 --batch_size 200 --Loss_function ArcFaceLoss
 
 '''
@@ -26,7 +27,7 @@ parser = argparse.ArgumentParser(description='Model training parameters')
 parser.add_argument('--model_name', type=str, default=None, help='Name of the model')
 parser.add_argument('--epochs', type=int, default=100, help='Number of epochs')
 parser.add_argument('--batch_size', type=int, default=100, help='Batch size')
-parser.add_argument('--Loss_function', type=str, default='ArcFaceLoss', help='Loss function')
+parser.add_argument('--Loss_function', type=str, default='BCEWithLogitsLoss', help='Loss function')
 args = parser.parse_args()
 
 model_name = args.model_name
