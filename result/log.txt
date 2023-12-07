@@ -115,3 +115,59 @@ f1: 0.8639039234319914
 test accuracy: 0.8166666626930237
 test loss: 0.0008288026601076126
 -------------------------------------
+Model: CrossViT
+Epochs: 100
+Base LR: 1e-05
+Weight decay: 1e-06
+Dropout: 0.05
+valid loss: 0.003373317321141561
+valid accuracy: 0.1483333259820938
+precision: 0.4987167134832019
+recall: 0.9828926905132193
+f1: 0.6472569337546668
+test accuracy: 0.09666666388511658
+test loss: 0.0033896247545878093
+loss funciton: RCELoss
+-------------------------------------
+Model: CrossViT
+Epochs: 100
+Base LR: 1e-05
+Weight decay: 1e-06
+Dropout: 0.05
+valid loss: 0.000887926717599233
+valid accuracy: 0.8016666769981384
+precision: 0.8542532931344727
+recall: 0.8709175738724728
+f1: 0.8614502553655373
+test accuracy: 0.8116666674613953
+test loss: 0.0009534778942664465
+loss funciton: BCELoss
+-------------------------------------
+Model: CrossViT
+Epochs: 100
+Base LR: 1e-05
+Weight decay: 1e-06
+Dropout: 0.05
+valid loss: 7.036215160042048e-05
+valid accuracy: 0.8216666579246521
+precision: 0.8771864449011292
+recall: 0.8678071539657853
+f1: 0.8715127126135632
+test accuracy: 0.800000011920929
+test loss: 7.525747176259756e-05
+loss function: FocalLoss
+-------------------------------------
+Model: CrossViT
+Epochs: 100
+Base LR: 1e-05
+Weight decay: 1e-06
+Dropout: 0.05
+valid loss: 0.009569974740346272
+valid accuracy: 0.6916666626930237
+precision: 0.7418208346085061
+recall: 0.9097978227060654
+f1: 0.8148653115030612
+test accuracy: 0.6816666722297668
+test loss: 0.011131636301676432
+loss function: ArcFaceLoss
+-------------------------------------

@@ -136,16 +136,22 @@ def valid_fn(config, model, val_loader, epoch):
             loss = config.LOSS_FUNC(pred, labels.squeeze(-1))
             valid_loss += loss.item()
             config.ACC_FUNC.update(pred.cpu(), labels.cpu())
-
+            
             # Save predictions and true labels for later metric calculation
             predictions.append((torch.sigmoid(pred)>0.5).int().cpu().numpy().astype(np.int32))
             true_labels.append(labels.cpu().numpy().astype(np.int32))
-            
+    
     predictions = np.concatenate(predictions, axis=0)
     true_labels = np.concatenate(true_labels, axis=0)
 
     # Compute precision, recall, and F1 score
     precision, recall, f1, _ = precision_recall_fscore_support(true_labels, predictions, average='weighted')
     valid_accuracy = config.ACC_FUNC.compute().item()
+    
+    with open(config.SAVE_DIR+'Val_Acc.txt', 'a') as file:
+        file.write(f'{valid_accuracy}\n')
+    with open(config.SAVE_DIR+'Val_Loss.txt', 'a') as file:
+        file.write(f'{valid_loss/config.VAL_SIZE}\n')
 
+    
     return valid_accuracy, valid_loss/config.VAL_SIZE, predictions, true_labels, precision, recall, f1

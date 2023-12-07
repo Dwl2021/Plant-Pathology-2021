@@ -8,3 +8,6 @@ torch==2.0.0+cu118
 torchmetrics==0.8.0
 torchvision==0.15.1+cu118
 tqdm==4.66.1
+vit_pytorch==1.6.4
+pyopenssl==23.3.0
+timm==0.9.12

@@ -6,31 +6,34 @@ import sys
 import os
 from vit_pytorch.na_vit import NaViT
 
-# custom module
+# util module
 from util.Data_loader import *
 from util.Train import *
 from util.Test import *
 from util.Plant_Accuracy import *
 from util.preprocessing import *
+from util.Load import *
 
-# models
-from Models.ResNet import *
-from Models.SEResnet import *
-from Models.SG_ViT import *
-from Models.Torch_ViT import *
-from Models.DeepViT import *
-from Models.CrossViT import *
-from Models.Deit import *
-from super_gradients.training import models
-from vit_pytorch.deepvit import DeepViT
+import argparse
 
-default_model_name = None
-default_epochs = 150
-default_batch_size = 150
+'''
+for example:
+python main.py --model_name CrossViT --epochs 100 --batch_size 200 --Loss_function ArcFaceLoss
 
-model_name = sys.argv[1] if len(sys.argv) > 1 else default_model_name
-epochs = int(sys.argv[2]) if len(sys.argv) > 2 else default_epochs
-batch_size = int(sys.argv[3]) if len(sys.argv) > 2 else default_batch_size
+'''
+
+parser = argparse.ArgumentParser(description='Model training parameters')
+parser.add_argument('--model_name', type=str, default=None, help='Name of the model')
+parser.add_argument('--epochs', type=int, default=100, help='Number of epochs')
+parser.add_argument('--batch_size', type=int, default=100, help='Batch size')
+parser.add_argument('--Loss_function', type=str, default='ArcFaceLoss', help='Loss function')
+args = parser.parse_args()
+
+model_name = args.model_name
+epochs = args.epochs
+batch_size = args.batch_size
+Loss_function = args.Loss_function
+
 
 class config:
     TRAIN_INIT_DIR = Path('/root/plant_dataset/train/images')
@@ -47,7 +50,6 @@ class config:
     TEST_SIZE = 0
     VAL_SIZE = 0
 
-
     EPOCHS = epochs
     INPUT_HEIGHT = 224
     INPUT_WIDTH = 224
@@ -59,8 +61,10 @@ class config:
     IMAGE_TYPE = '.jpg'
     BATCH_SIZE = batch_size
     MODEL_NAME = model_name
+    
+    LOSS_FUNC = None
+    LOSS_FUNC_NAME = Loss_function
 
-    LOSS_FUNC = nn.BCEWithLogitsLoss()
     ACC_FUNC = Plant_Accuracy()
     OPTIM = None
     LR = 0.00001
@@ -68,46 +72,21 @@ class config:
     DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
     LABELS = ['complex', 'frog_eye_leaf_spot', 'healthy', 'powdery_mildew', 'rust', 'scab']
     NUM_CLASSES = len(LABELS)
-    SAVE_DIR = "/root/Plant-Pathology-2021/result/"+f"{MODEL_NAME}/"
-    LOG_TXT = "/root/Plant-Pathology-2021/log.txt"
+    SAVE_DIR = "/root/Plant-Pathology-2021/result/"+f"{MODEL_NAME}_{LOSS_FUNC_NAME}/"
+    LOG_TXT = "/root/Plant-Pathology-2021/result/log.txt"
 
-
-def load_model(model_name):
-    l_model = None
-    if model_name == 'ResNet50':
-        l_model = ResNet(model=50)
-    elif model_name == 'ResNet101':
-        l_model = ResNet(model=101)
-    elif model_name == 'SEResNet34':
-        l_model = SEResnet(model=34)
-    elif model_name == 'SEResNet50':
-        l_model = SEResnet(model=50)
-    elif model_name == 'SEResNet101':
-        l_model = SEResnet(model=101)
-    elif model_name == 'SG_ViT':
-        l_model = SG_ViT()
-    elif model_name == 'Torch_ViT':
-        l_model = Torch_ViT()
-    elif model_name == "DeepViT":
-        l_model = Deep_ViT()
-    elif model_name == "CrossViT":
-        l_model = Cross_ViT(pretrain_path='/root/crossvit_small_224.pth')
-    elif model_name == "Deit":
-        l_model = Deit()
-    elif model_name == "ResNeXt":
-        l_model = models.get("ResNext", num_classes=6, pretrained_weights='imagenet')
-    else:
-        raise("Error!")
-    return l_model
 
 if __name__ == '__main__': 
     if not os.path.exists(config.SAVE_DIR):
         os.makedirs(config.SAVE_DIR)
     # ---------------preprocess the saw image----------------
+    # if you want to know more about the preprocessing, you 
+    # can read the file at "/util/preprocessing.py"
     
     # preprocessing(config)
     
     # ---------------create the dateloader--------------------
+    
     ##  load the csv files
     train_df, valid_df, test_df, config = load_df(config);
     ## generate the transform
@@ -122,10 +101,9 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_dataset, batch_size=config.BATCH_SIZE)
     
     # ----------------------init the model--------------------
-    
-    ######### to change the model here ##########
     model = load_model(config.MODEL_NAME)
     model = model.to(config.DEVICE)
+    config.LOSS_FUNC = load_loss_function(config.LOSS_FUNC_NAME)
 
     # ----------------------for test only--------------------
     '''
@@ -160,7 +138,8 @@ if __name__ == '__main__':
                    "\nrecall: " + str(recall) +
                    "\nf1: " + str(f1) +
                    "\ntest accuracy: " + str(accuracy) +
-                   "\ntest loss: " + str(loss) + "\n"+
+                   "\ntest loss: " + str(loss) + 
+                   "\nloss function: " + config.LOSS_FUNC_NAME +"\n"+
                    "-------------------------------------\n"
                   )
     

@@ -9,6 +9,25 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 import functools
 
+'''
+    Please unzip your raw data in /root/plant_dataset/
+    The directory structure should be as follows:
+
+    plant_dataset
+    ├── test       
+    │   ├── test_label.csv 
+    │   └── images         
+    ├── train     
+    │   ├── images        
+    │   └── train_label.csv
+    └── val       
+        ├── val_label.csv  
+        └── images
+
+    This structure is important for the scripts to correctly locate and process the data.
+'''
+
+
 def resize_image(image_path, output_size, path):
     image = Image.open(image_path)
     resized_image = image.resize(output_size)
